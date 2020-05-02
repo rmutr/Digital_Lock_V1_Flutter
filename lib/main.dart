@@ -3,7 +3,6 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 import 'dart:convert' show utf8;
 import 'package:wakelock/wakelock.dart';
-import 'package:sprintf/sprintf.dart'; 
 
 void main() => runApp(MyApp());
 
