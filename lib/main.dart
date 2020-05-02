@@ -193,10 +193,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("0"),
-          onPressed: () {
-            this.keepinTxBuff("0");
-          }),
+        child: Text("0"),
+        onPressed: () => this.keepinTxBuff("0"),
+      ),
     );
   }
 
@@ -204,10 +203,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("1"),
-          onPressed: () {
-            this.keepinTxBuff("1");
-          }),
+        child: Text("1"),
+        onPressed: () => this.keepinTxBuff("1"),
+      ),
     );
   }
 
@@ -215,10 +213,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("2"),
-          onPressed: () {
-            this.keepinTxBuff("2");
-          }),
+        child: Text("2"),
+        onPressed: () => this.keepinTxBuff("2"),
+      ),
     );
   }
 
@@ -226,10 +223,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("3"),
-          onPressed: () {
-            this.keepinTxBuff("3");
-          }),
+        child: Text("3"),
+        onPressed: () => this.keepinTxBuff("3"),
+      ),
     );
   }
 
@@ -237,10 +233,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("4"),
-          onPressed: () {
-            this.keepinTxBuff("4");
-          }),
+        child: Text("4"),
+        onPressed: () => this.keepinTxBuff("4"),
+      ),
     );
   }
 
@@ -248,10 +243,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("5"),
-          onPressed: () {
-            this.keepinTxBuff("5");
-          }),
+        child: Text("5"),
+        onPressed: () => this.keepinTxBuff("5"),
+      ),
     );
   }
 
@@ -259,10 +253,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("6"),
-          onPressed: () {
-            this.keepinTxBuff("6");
-          }),
+        child: Text("6"),
+        onPressed: () => this.keepinTxBuff("6"),
+      ),
     );
   }
 
@@ -270,10 +263,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("7"),
-          onPressed: () {
-            this.keepinTxBuff("7");
-          }),
+        child: Text("7"),
+        onPressed: () => this.keepinTxBuff("7"),
+      ),
     );
   }
 
@@ -281,10 +273,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("8"),
-          onPressed: () {
-            this.keepinTxBuff("8");
-          }),
+        child: Text("8"),
+        onPressed: () => this.keepinTxBuff("8"),
+      ),
     );
   }
 
@@ -292,10 +283,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("9"),
-          onPressed: () {
-            this.keepinTxBuff("9");
-          }),
+        child: Text("9"),
+        onPressed: () => this.keepinTxBuff("9"),
+      ),
     );
   }
 
@@ -303,10 +293,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("Cancel"),
-          onPressed: () {
-            tx_buff_str = "";
-          }),
+        child: Text("Cancel"),
+        onPressed: () => tx_buff_str = "",
+      ),
     );
   }
 
@@ -314,10 +303,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-          child: Text("Ok"),
-          onPressed: () {
-            this.sendTxBuff("C2-" + tx_buff_str);
-          }),
+        child: Text("Ok"),
+        onPressed: () => this.sendTxBuff("C2-" + tx_buff_str),
+      ),
     );
   }
 
@@ -325,10 +313,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 100.0,
       child: RaisedButton(
-          child: Text("Stop"),
-          onPressed: () {
-            this.sendTxBuff("C0-" + tx_buff_str);
-          }),
+        child: Text("Stop"),
+        onPressed: () => this.sendTxBuff("C0-" + tx_buff_str),
+      ),
     );
   }
 
@@ -336,10 +323,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 100.0,
       child: RaisedButton(
-          child: Text("Start"),
-          onPressed: () {
-            this.sendTxBuff("C1-" + tx_buff_str);
-          }),
+        child: Text("Start"),
+        onPressed: () => this.sendTxBuff("C1-" + tx_buff_str),
+      ),
     );
   }
 
