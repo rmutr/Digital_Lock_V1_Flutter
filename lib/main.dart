@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 import 'dart:convert' show utf8;
+import 'package:wakelock/wakelock.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,6 +24,7 @@ class DigitalLock extends StatefulWidget {
 class _DigitalLockState extends State<DigitalLock> {
 //-----------------------------------------------------------------------------
   String tx_buff_str = "";
+  TextEditingController txtCtrl_Pincode = TextEditingController();
 
 //-----------------------------------------------------------------------------
   final String SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -40,6 +42,7 @@ class _DigitalLockState extends State<DigitalLock> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     startScan();
   }
 
@@ -135,10 +138,32 @@ class _DigitalLockState extends State<DigitalLock> {
     writeData(pstr);
   }
 
+  Future<void> changePincodeDialog() async {
+    showDialog(
+      context: context,
+      builder: (value) => AlertDialog(
+        title: Text("New Pincode"),
+        content: TextField(controller: txtCtrl_Pincode),
+        actions: <Widget>[
+          FlatButton(onPressed: () {
+            this.sendTxBuff("C3-" + tx_buff_str + "-" + txtCtrl_Pincode.text);
+            Navigator.of(context).pop();
+          }, child: Text("Ok")),
+          FlatButton(onPressed: () => Navigator.of(context).pop(), child: Text("Cancel")),
+        ],
+      ),
+    );
+  }
+
+  Future<void> setAlarmDialog() async {
+    showDialog(
+      context: context,
+    );
+  }
+
   Widget dlBtn_0() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("0"),
           onPressed: () {
@@ -150,7 +175,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_1() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("1"),
           onPressed: () {
@@ -162,7 +186,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_2() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("2"),
           onPressed: () {
@@ -174,7 +197,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_3() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("3"),
           onPressed: () {
@@ -186,7 +208,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_4() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("4"),
           onPressed: () {
@@ -198,7 +219,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_5() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("5"),
           onPressed: () {
@@ -210,7 +230,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_6() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("6"),
           onPressed: () {
@@ -222,7 +241,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_7() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("7"),
           onPressed: () {
@@ -234,7 +252,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_8() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("8"),
           onPressed: () {
@@ -246,7 +263,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtn_9() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("9"),
           onPressed: () {
@@ -258,7 +274,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtnCancel() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("Cancel"),
           onPressed: () {
@@ -270,7 +285,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtnOk() {
     return Container(
       width: 80.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("Ok"),
           onPressed: () {
@@ -282,7 +296,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtnStop() {
     return Container(
       width: 100.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("Stop"),
           onPressed: () {
@@ -294,7 +307,6 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtnStart() {
     return Container(
       width: 100.0,
-      height: 50.0,
       child: RaisedButton(
           child: Text("Start"),
           onPressed: () {
@@ -306,16 +318,23 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget dlBtnChangePincode() {
     return Container(
       width: 100.0,
-      height: 50.0,
-      child: RaisedButton(child: Text("Change Pincode"), onPressed: () {}),
+      child: RaisedButton(
+          child: Text("Change Pincode"),
+          onPressed: () {
+            this.txtCtrl_Pincode.text = "";
+            this.changePincodeDialog();
+          }),
     );
   }
 
   Widget dlBtnAlarm() {
     return Container(
       width: 100.0,
-      height: 50.0,
-      child: RaisedButton(child: Text("Alarm"), onPressed: () {}),
+      child: RaisedButton(
+          child: Text("Alarm"),
+          onPressed: () {
+            this.setAlarmDialog();
+          }),
     );
   }
 
