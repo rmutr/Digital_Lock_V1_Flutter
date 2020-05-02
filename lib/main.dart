@@ -1,8 +1,7 @@
-import 'dart:async';
-import 'dart:convert' show utf8;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'dart:async';
+import 'dart:convert' show utf8;
 
 void main() => runApp(MyApp());
 
@@ -52,10 +51,9 @@ class _DigitalLockState extends State<DigitalLock> {
 
     scanSubScription = flutterBlue.scan().listen((scanResult) {
       if (scanResult.device.name == TARGET_DEVICE_NAME) {
-        print('02 DEVICE found');
         stopScan();
         setState(() {
-          connectionText = "03 Found Target Device";
+          connectionText = "02 Found Target Device";
           print(connectionText);
         });
 
@@ -74,18 +72,37 @@ class _DigitalLockState extends State<DigitalLock> {
     if (targetDevice == null) return;
 
     setState(() {
-      connectionText = "04 Device Connecting";
+      connectionText = "03 Device Connecting";
       print(connectionText);
     });
 
     await targetDevice.connect();
-    print('05 DEVICE CONNECTED');
     setState(() {
-      connectionText = "06 Device Connected";
+      connectionText = "04 Device Connected";
       print(connectionText);
     });
 
     discoverServices();
+  }
+
+  discoverServices() async {
+    if (targetDevice == null) return;
+
+    List<BluetoothService> services = await targetDevice.discoverServices();
+    services.forEach((service) {
+      if (service.uuid.toString() == SERVICE_UUID) {
+        service.characteristics.forEach((characteristic) {
+          if (characteristic.uuid.toString() == CHARACTERISTIC_UUID) {
+            targetCharacteristic = characteristic;
+            writeData("Hi, ESP32");
+            setState(() {
+              connectionText = "05 All Ready with ${targetDevice.name}";
+              print(connectionText);
+            });
+          }
+        });
+      }
+    });
   }
 
   disconnectFromDevice() {
@@ -94,33 +111,8 @@ class _DigitalLockState extends State<DigitalLock> {
     targetDevice.disconnect();
 
     setState(() {
-      connectionText = "07 Device Disconnected";
+      connectionText = "06 Device Disconnected";
       print(connectionText);
-    });
-  }
-
-  discoverServices() async {
-    if (targetDevice == null) return;
-
-    print("08");
-    List<BluetoothService> services = await targetDevice.discoverServices();
-    services.forEach((service) {
-      print("09 " + SERVICE_UUID + " == " + service.uuid.toString());
-      // do something with service
-      if (service.uuid.toString() == SERVICE_UUID) {
-        print("10");
-        service.characteristics.forEach((characteristic) {
-          if (characteristic.uuid.toString() == CHARACTERISTIC_UUID) {
-            print("11");
-            targetCharacteristic = characteristic;
-            writeData("Hi there, ESP32!!");
-            setState(() {
-              connectionText = "12 All Ready with ${targetDevice.name}";
-              print(connectionText);
-            });
-          }
-        });
-      }
     });
   }
 
