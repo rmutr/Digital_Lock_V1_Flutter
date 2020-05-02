@@ -3,6 +3,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 import 'dart:convert' show utf8;
 import 'package:wakelock/wakelock.dart';
+import 'package:sprintf/sprintf.dart'; 
 
 void main() => runApp(MyApp());
 
@@ -25,6 +26,7 @@ class _DigitalLockState extends State<DigitalLock> {
 //-----------------------------------------------------------------------------
   String tx_buff_str = "";
   TextEditingController txtCtrl_Pincode = TextEditingController();
+  TextEditingController txtCtrl_AlarmTime = TextEditingController();
 
 //-----------------------------------------------------------------------------
   final String SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -139,25 +141,52 @@ class _DigitalLockState extends State<DigitalLock> {
   }
 
   Future<void> changePincodeDialog() async {
+    this.txtCtrl_Pincode.text = "";
+
     showDialog(
       context: context,
       builder: (value) => AlertDialog(
         title: Text("New Pincode"),
         content: TextField(controller: txtCtrl_Pincode),
         actions: <Widget>[
-          FlatButton(onPressed: () {
-            this.sendTxBuff("C3-" + tx_buff_str + "-" + txtCtrl_Pincode.text);
-            Navigator.of(context).pop();
-          }, child: Text("Ok")),
-          FlatButton(onPressed: () => Navigator.of(context).pop(), child: Text("Cancel")),
+          FlatButton(
+              onPressed: () {
+                this.sendTxBuff(
+                    "C3-" + tx_buff_str + "-" + txtCtrl_Pincode.text);
+                Navigator.of(context).pop();
+              },
+              child: Text("Ok")),
+          FlatButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel")),
         ],
       ),
     );
   }
 
   Future<void> setAlarmDialog() async {
+    this.txtCtrl_AlarmTime.text = "";
+
     showDialog(
       context: context,
+      builder: (value) => AlertDialog(
+        title: Text("Time to alarm (sec.)"),
+        content: TextField(controller: txtCtrl_AlarmTime),
+        actions: <Widget>[
+          FlatButton(
+              onPressed: () {
+                String btime_str = txtCtrl_AlarmTime.text;
+                int btime_int = int.tryParse(btime_str) ?? 0;
+                btime_str = btime_int.toString().padLeft(4, '0');
+                this.sendTxBuff("C4-" + tx_buff_str + "-" + btime_str);
+                Navigator.of(context).pop();
+              },
+              child: Text("Ok")),
+          FlatButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel")),
+        ],
+      ),
     );
   }
 
@@ -319,11 +348,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 100.0,
       child: RaisedButton(
-          child: Text("Change Pincode"),
-          onPressed: () {
-            this.txtCtrl_Pincode.text = "";
-            this.changePincodeDialog();
-          }),
+        child: Text("Change Pincode"),
+        onPressed: () => this.changePincodeDialog(),
+      ),
     );
   }
 
@@ -331,10 +358,9 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 100.0,
       child: RaisedButton(
-          child: Text("Alarm"),
-          onPressed: () {
-            this.setAlarmDialog();
-          }),
+        child: Text("Alarm"),
+        onPressed: () => this.setAlarmDialog(),
+      ),
     );
   }
 
