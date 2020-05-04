@@ -397,7 +397,7 @@ class _DigitalLockState extends State<DigitalLock> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("RmutR Digital Lock V1"),
+        title: Text("RMUTR Digital Lock V1"),
       ),
       body: dlKeyPad(),
     );
