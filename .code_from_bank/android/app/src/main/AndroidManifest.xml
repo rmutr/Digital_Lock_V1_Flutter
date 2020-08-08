@@ -11,7 +11,7 @@
         android:icon="@mipmap/ic_launcher">
         <!-- Add the following entry, with your API key -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-        android:value="your api key"/>
+        android:value="YOUKEIAPI"/>
         
         <activity
             android:name=".MainActivity"

@@ -1,3 +1,5 @@
+import 'package:digital_lock_v1_flutter/SQLite/cart_model.dart';
+import 'package:digital_lock_v1_flutter/SQLite/sqlite_helpper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
@@ -53,6 +55,7 @@ class _DigitalLockState extends State<DigitalLock> {
     super.initState();
     Wakelock.enable();
     startScan();
+    readMap();
   }
 
   startScan() {
@@ -311,9 +314,11 @@ class _DigitalLockState extends State<DigitalLock> {
     return Container(
       width: 80.0,
       child: RaisedButton(
-        child: Text("Ok"),
-        onPressed: () => this.sendTxBuff("C2-" + tx_buff_str),
-      ),
+          child: Text("Ok"),
+          onPressed: () {
+            print(connectionText);
+            this.sendTxBuff("C2-" + tx_buff_str);
+          }),
     );
   }
 
@@ -325,9 +330,9 @@ class _DigitalLockState extends State<DigitalLock> {
           child: Text("Stop"),
           onPressed: () {
             this.sendTxBuff("C0-" + tx_buff_str);
-            if(targetDevice != null){
+            if (targetDevice != null) {
               _initGps();
-            }              
+            }
           }),
     );
   }
@@ -414,6 +419,14 @@ class _DigitalLockState extends State<DigitalLock> {
   }
 
 //-----------------------------------------------------------------------------Add
+  Future readMap() async {
+    var object = await SQLiteHelper().readAllDataFromSQLite();
+    latlngLat = double.parse(object[0].latSqlite);
+    latlngLng = double.parse(object[0].lonSqlite);
+    _center = LatLng(latlngLat, latlngLng);
+    print('lat = ${object[0].latSqlite} lon = ${object[0].lonSqlite}');
+  }
+
   Future<LocationData> findLocationData() async {
     Location location = Location();
     try {
@@ -468,7 +481,29 @@ class _DigitalLockState extends State<DigitalLock> {
       _center = LatLng(latlngLat, latlngLng);
       _goToTheLake();
       _onAddMarkerButtonPressed();
+      addMap();
     });
+  }
+
+  void addMap() async {
+    await SQLiteHelper().deleteDataWhereId(1).then((value) {});
+
+    Map<String, dynamic> map = Map();
+
+    map['latSqlite'] = latlngLat.toString();
+    map['lonSqlite'] = latlngLng.toString();
+    map['txSqlute'] = tx_buff_str;
+
+    print('map ==> ${map.toString()}');
+
+    CartModel cartModel = CartModel.fromJson(map);
+
+    await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+      print('Insert Success');
+    });
+
+    // var object = await SQLiteHelper().readAllDataFromSQLite();
+    // print('object lenght = ${object.toString()}');
   }
 
   _onAddMarkerButtonPressed() {
@@ -505,6 +540,7 @@ class _DigitalLockState extends State<DigitalLock> {
                     builder: (BuildContext context) => googleMap(),
                   );
                   Navigator.of(context).push(materialPageRoute);
+                  _onAddMarkerButtonPressed();
                 });
               })
         ],
