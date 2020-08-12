@@ -1,4 +1,3 @@
-import 'package:digital_lock_v1_flutter/SQLite/cart_model.dart';
 import 'package:digital_lock_v1_flutter/SQLite/sqlite_helpper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -27,13 +26,11 @@ class DigitalLock extends StatefulWidget {
 }
 
 class _DigitalLockState extends State<DigitalLock> {
-//-----------------------------------------------------------------------------Add
   Completer<GoogleMapController> _controller = Completer();
   LatLng _center = const LatLng(13.7181689, 100.4968919);
   double latlngLat;
   double latlngLng;
   Marker marker;
-//-----------------------------------------------------------------------------engAdd
   String tx_buff_str = "";
   TextEditingController txtCtrl_Pincode = TextEditingController();
   TextEditingController txtCtrl_AlarmTime = TextEditingController();
@@ -418,7 +415,25 @@ class _DigitalLockState extends State<DigitalLock> {
     );
   }
 
-//-----------------------------------------------------------------------------Add
+  List<Widget> mapButtom(BuildContext context) {
+    return <Widget>[
+      IconButton(
+          icon: Icon(Icons.map),
+          color: Colors.blue[100],
+          iconSize: 35,
+          onPressed: () {
+            print('buttom refresh');
+            setState(() {
+              MaterialPageRoute materialPageRoute = MaterialPageRoute(
+                builder: (BuildContext context) => googleMap(),
+              );
+              Navigator.of(context).push(materialPageRoute);
+              _onAddMarkerButtonPressed();
+            });
+          })
+    ];
+  }
+
   Future readMap() async {
     var object = await SQLiteHelper().readAllDataFromSQLite();
     latlngLat = double.parse(object[0].latSqlite);
@@ -485,7 +500,7 @@ class _DigitalLockState extends State<DigitalLock> {
     });
   }
 
-  void addMap() async {
+  addMap() async {
     await SQLiteHelper().deleteDataWhereId(1).then((value) {});
 
     Map<String, dynamic> map = Map();
@@ -501,9 +516,6 @@ class _DigitalLockState extends State<DigitalLock> {
     await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
       print('Insert Success');
     });
-
-    // var object = await SQLiteHelper().readAllDataFromSQLite();
-    // print('object lenght = ${object.toString()}');
   }
 
   _onAddMarkerButtonPressed() {
@@ -528,25 +540,31 @@ class _DigitalLockState extends State<DigitalLock> {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         title: Text("RMUTR Digital Lock V1"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.map),
-              color: Colors.blue[100],
-              iconSize: 35,
-              onPressed: () {
-                print('buttom refresh');
-                setState(() {
-                  MaterialPageRoute materialPageRoute = MaterialPageRoute(
-                    builder: (BuildContext context) => googleMap(),
-                  );
-                  Navigator.of(context).push(materialPageRoute);
-                  _onAddMarkerButtonPressed();
-                });
-              })
-        ],
+        actions: mapButtom(context),
       ),
       body: dlKeyPad(),
     );
   }
 }
-//-----------------------------------------------------------------------------engAdd
+
+class CartModel {
+  int id;
+  String latSqlite;
+  String lonSqlite;
+
+  CartModel({this.id, this.latSqlite, this.lonSqlite});
+
+  CartModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    latSqlite = json['latSqlite'];
+    lonSqlite = json['lonSqlite'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['latSqlite'] = this.latSqlite;
+    data['lonSqlite'] = this.lonSqlite;
+    return data;
+  }
+}

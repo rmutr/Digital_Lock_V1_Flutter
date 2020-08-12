@@ -1,4 +1,4 @@
-import 'package:digital_lock_v1_flutter/SQLite/cart_model.dart';
+import 'package:digital_lock_v1_flutter/main.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
